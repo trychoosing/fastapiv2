@@ -63,14 +63,16 @@ def load_image_for_qwen(nowfile:os.PathLike):
 @app.get("/task-status/{task_id}")
 async def get_task_status(task_id: str):
     mainfilepath = "/fastapi/uf/"
-    if os.path.exists(mainfilepath+task_id+"text_gen.txt") ==True:
-        with open(mainfilepath+task_id+"text_gen.txt",'r') as ff:
+    if os.path.exists(mainfilepath+task_id+"final_deep_seek.txt") ==True:
+        with open(mainfilepath+task_id+"final_deep_seek.txt",'r') as ff:
             result = ff.read()
              
-        os.system("rm "+mainfilepath+task_id+"text_gen.txt")
+        os.system("rm "+mainfilepath+task_id+"final_deep_seek.txt")
         return {"status": "completed", "result":  result}
     else:
         return {"status": "pending" }
+
+
 
 @app.post("/submit")
 async def submit(prompt_1:  List[str]   , image: UploadFile = File(...)):
@@ -91,6 +93,15 @@ async def submit(prompt_1:  List[str]   , image: UploadFile = File(...)):
     ff.write(prompt_11[0])
    
   taskid =  prompt_11[1]
+  p01_tag_json=prompt_11[2]
+  p02_button_scedule=prompt_11[3]
+  p03_today_s_date=prompt_11[4]
+  p04_when_reminder_needed=prompt_11[5]
+  p05_when_does_schedule_end=prompt_11[6]
+  
+  with open(f"/fastapi/uf/BB_DD_BB_DD{uuig1}.txt" ,'w' ) as ff:
+      ff.writelines(prompt_11[2:])
+   
   return   {"message": "Task enqueued", "task_id": taskid} 
    
  

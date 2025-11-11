@@ -72,10 +72,7 @@ def long_running_task(prompt_1,
                                           image1,
                                           DEVICE1,)    
     return text_gen1
-    
-def use_deep_seek_model():
-    
-    return 
+     
 if __name__=="__main__":
     import os
     import time 

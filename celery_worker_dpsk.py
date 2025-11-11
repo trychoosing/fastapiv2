@@ -2,7 +2,7 @@ import time
 import os 
 class cal_alarm_schedule_definition():
   def __init__(self,
-               tag_json_list:list,
+               tag_json_list:str,
                output_from_VLM:str , 
                zone:str,
                when_alarm_neede:str,
@@ -79,7 +79,7 @@ def prompt_Wdescrp_Wprofiles_DEEPSEEK(cal_alarm_schedule_ ,
 
             A. Inputs:
             1. Schedule in a given document: {output_from_VLM}.
-            2. Information corresponding to a specific person: {str(tag_json_list)}
+            2. Information corresponding to a specific person: { (tag_json_list)}
             
             B. Reference time:
             1. Today is {today_s_date}.  
@@ -140,31 +140,40 @@ def prompt_Wdescrp_Wprofiles_DEEPSEEK(cal_alarm_schedule_ ,
                   llm_ls  )
   response = chain.invoke({'prompt':prompt    })
   return response.content.strip()
-    
-def long_running_task(defined_class ):
-    """Simulates a long-running task.""" 
-      
-    return text_gen1
+     
 if __name__=="__main__":
     import os
     import time 
-    mainfilepath = "/fastapi/uf/"
-    model1, processor1, DEVICE1 = load_qwen_VLM_model() 
+    mainfilepath = "/fastapi/uf/" 
+    deepseek_load()
+    
     while 1:
         nowfilepaths =  os.listdir(mainfilepath )
         full_paths = []
-        nowfilepaths1 = [x for x in nowfilepaths if '.txt' not in x]
+        nowfilepaths1 = [x for x in nowfilepaths if 'text_gen' in x]
         try:
             item = nowfilepaths1[0] 
+             
+            with open(  os.path.join(mainfilepath,item ),'r') as ff:
+                text_gen1 = ff.read()
+            with open(os.path.join(mainfilepath, 'BB_DD_BB_DD'+item.replace('text_gen','') ),'r') as ff: 
+                calsparams=ff.readlines( )
+                
+            cal_al = cal_alarm_schedule_definition( calsparams[0] ,
+                                                    calsparams[1]  , 
+                                                    calsparams[2],
+                                                    calsparams[3],
+                                                    calsparams[4]
+                                                    )
+            st.write('sending to llm')
+            response_parse = prompt_Wdescrp_Wprofiles_DEEPSEEK(cal_al,
+                                      ) 
+            st.write('parsing output') 
+            with open(os.path.join(mainfilepath,  item.replace('text_gen','final_deep_seek') ),'w') as ffg: 
+                ff.write(response_parse) 
             
-            with open(  os.path.join(mainfilepath,item+'.txt') ,'r') as ff:
-                prompt1 = ff.read()
-            image_path =   os.path.join(mainfilepath,item  )
-            text_gen1 = long_running_task(prompt1,  image_path  )
-            with open(  os.path.join(mainfilepath,item+'text_gen.txt'),'w') as ff:
-                ff.write(text_gen1)
-            os.system('rm '+mainfilepath+item+'.txt')
-            os.system('rm '+mainfilepath+item )
+            os.system('rm '+mainfilepath+item ) 
+            os.system('rm '+mainfilepath+'BB_DD_BB_DD'+item.replace('text_gen','')  ) 
             
             time.sleep(0.1)
          
