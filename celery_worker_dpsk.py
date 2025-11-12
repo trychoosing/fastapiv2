@@ -4,14 +4,13 @@ class cal_alarm_schedule_definition():
   def __init__(self,
                tag_json_list:str,
                output_from_VLM:str , 
-               zone:str,
+               timeinzone:str,
                when_alarm_neede:str,
                time_range_):
-    import datetime
-    from zoneinfo import ZoneInfo
+    import datetime 
     self.listtagjson = tag_json_list
     self.output_from_VLM = output_from_VLM
-    today_s_date = datetime.datetime.now(ZoneInfo(zone)).strftime("%Y-%m-%d") 
+    today_s_date = timeinzone
     self.today_s_date = today_s_date
     self.time_range_ = time_range_
     self.when_alarm_neede = when_alarm_neede
@@ -55,6 +54,8 @@ def getcds(temperature=0,):
 
 def get_chain_message(system_message:str,
                human_message:str)-> list:
+    
+  from langchain_core.messages import HumanMessage, SystemMessage
   messages= [
     SystemMessage(
         content=system_message
@@ -67,6 +68,10 @@ def get_chain_message(system_message:str,
   return messages
 def prompt_Wdescrp_Wprofiles_DEEPSEEK(cal_alarm_schedule_ , 
                              ):
+  
+  from langchain_core.output_parsers.list import ListOutputParser
+  from langchain_core.prompts import ChatPromptTemplate
+  from langchain_core.output_parsers.string import StrOutputParser
   time_range_ = cal_alarm_schedule_.time_range_
   today_s_date = cal_alarm_schedule_.today_s_date
   output_from_VLM = cal_alarm_schedule_.output_from_VLM
@@ -135,6 +140,8 @@ def prompt_Wdescrp_Wprofiles_DEEPSEEK(cal_alarm_schedule_ ,
   messages_extract_topicstatements = get_chain_message(system_message,human_message)
   prompttemplate = ChatPromptTemplate.from_messages(messages_extract_topicstatements )
   llm_ls=getcds( )
+  
+  print(prompt) 
   chain =  (prompttemplate
                     |
                   llm_ls  )
@@ -156,7 +163,7 @@ if __name__=="__main__":
             print(item)
             with open(  os.path.join(mainfilepath,item ),'r') as ff:
                 text_gen1 = ff.read()
-                text_gen2 = text_gen1[text_gen1.find('```csv'):text_gen1.rfind('```')] 
+                text_gen2 = text_gen1#[text_gen1.find('```csv'):text_gen1.rfind('```')] 
             with open(os.path.join(mainfilepath, 'BB_DD_BB_DD'+item.replace('text_gen','') ),'r') as ff: 
                 calsparams1=ff.read( )
                 calsparams = calsparams1.split('__**__')
@@ -171,13 +178,21 @@ if __name__=="__main__":
             print('sending to llm')
             response_parse = prompt_Wdescrp_Wprofiles_DEEPSEEK(cal_al,
                                       ) 
+            
             print('parsing output') 
+            print(response_parse) 
+            if os.path.isfile(os.path.join(mainfilepath,  item.replace('text_gen','final_deep_seek')))==True:
+                os.system('rm '+mainfilepath+item.replace('text_gen','final_deep_seek')) 
+                print('deleted') 
+     
             with open(os.path.join(mainfilepath,  item.replace('text_gen','final_deep_seek') ),'w') as ffg: 
-                ff.write(response_parse) 
-            
+                ffg.write(response_parse) 
+                print('written response') 
+     
             os.system('rm '+mainfilepath+item ) 
+            print('delete1 1output') 
             os.system('rm '+mainfilepath+'BB_DD_BB_DD'+item.replace('text_gen','')  ) 
-            
+            print('delete1 2output') 
             time.sleep(0.1)
          
         except Exception :

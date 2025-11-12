@@ -33,3 +33,5 @@ pip install -r requirements.txt
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload --timeout-keep-alive 600
 
 #streamlit run streamlit_oauthv4.py --server.port 8038
+
+scp -P 22076 -i ~/.ssh/id_ed25519 C:\Users\trych\Desktop\ProjectFolder\time_and_task_streamlit_v2\..fastapiserve\celery_worker_dpsk.py root@69.30.85.149:/fastapi

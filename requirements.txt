@@ -7,3 +7,7 @@ python-multipart
 celery
 redis
 hf_transfer
+langchain 
+langchain-core 
+langchain-deepseek
+langchain-community 
