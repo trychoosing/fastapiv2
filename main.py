@@ -93,14 +93,14 @@ async def submit(prompt_1:  List[str]   , image: UploadFile = File(...)):
     ff.write(prompt_11[0])
    
   taskid =  prompt_11[1]
-  p01_tag_json=prompt_11[2]
-  p02_button_scedule=prompt_11[3]
-  p03_today_s_date=prompt_11[4]
-  p04_when_reminder_needed=prompt_11[5]
-  p05_when_does_schedule_end=prompt_11[6]
+ # p01_tag_json=prompt_11[2]
+  #p02_button_scedule=prompt_11[3]
+  #p03_today_s_date=prompt_11[4]
+  #p04_when_reminder_needed=prompt_11[5]
+  #p05_when_does_schedule_end=prompt_11[6]
   
-  with open(f"/fastapi/uf/BB_DD_BB_DD{uuig1}.txt" ,'w' ) as ff:
-      ff.writelines(prompt_11[2:])
+  with open(f"/fastapi/uf/BB_DD_BB_DD{uuig1}" ,'w' ) as ff:
+      ff.write('__**__'.join(prompt_1l[2:] ) ) 
    
   return   {"message": "Task enqueued", "task_id": taskid} 
    

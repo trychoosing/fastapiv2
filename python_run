@@ -3,8 +3,9 @@ apt install redis-server
 redis-server
 
 cd ..
-rm -r fastapi 
+rm -r fastapi  
 git clone https://github.com/trychoosing/fastapiv2.git
+mv fastapiv2 fastapi
 cd fastapi 
 apt-get update -y
 apt-get install vim -y
@@ -12,9 +13,19 @@ pip install -r requirements.txt
 mkdir uf
 uvicorn main:app --host 0.0.0.0 --port 8000 --timeout-keep-alive 600 &
 
-python celery_worker.py  
-python celery_worker_dpsk.py 
 
+cd fastapi
+python celery_worker.py  
+
+cd fastapi
+python celery_worker_dpsk.py 
+streamlit run app.py --server.port=8038  
+scp -P 22076 -i ~/.ssh/id_ed25519 C:\Users\trych\Desktop\ProjectFolder\time_and_task_streamlit_v2\..fastapiserve\dpsk.yaml root@69.30.85.149:/fastapi
+scp -P 22076 -i ~/.ssh/id_ed25519 C:\Users\trych\Desktop\ProjectFolder\time_and_task_streamlit_v2\..fastapiserve\hfk.yaml root@69.30.85.149:/fastapi
+scp root@69.30.85.149 -p 22196 -i ~/.ssh/id_ed25519 
+ 
+ 
+ 
  
 apt-get update -y
 apt-get install vim -y

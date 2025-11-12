@@ -153,22 +153,25 @@ if __name__=="__main__":
         nowfilepaths1 = [x for x in nowfilepaths if 'text_gen' in x]
         try:
             item = nowfilepaths1[0] 
-             
+            print(item)
             with open(  os.path.join(mainfilepath,item ),'r') as ff:
                 text_gen1 = ff.read()
+                text_gen2 = text_gen1[text_gen1.find('```csv'):text_gen1.rfind('```')] 
             with open(os.path.join(mainfilepath, 'BB_DD_BB_DD'+item.replace('text_gen','') ),'r') as ff: 
-                calsparams=ff.readlines( )
-                
+                calsparams1=ff.read( )
+                calsparams = calsparams1.split('__**__')
+            #len(calsparams)
+            print(len(calsparams))
             cal_al = cal_alarm_schedule_definition( calsparams[0] ,
-                                                    calsparams[1]  , 
+                                                    text_gen2, 
                                                     calsparams[2],
                                                     calsparams[3],
                                                     calsparams[4]
                                                     )
-            st.write('sending to llm')
+            print('sending to llm')
             response_parse = prompt_Wdescrp_Wprofiles_DEEPSEEK(cal_al,
                                       ) 
-            st.write('parsing output') 
+            print('parsing output') 
             with open(os.path.join(mainfilepath,  item.replace('text_gen','final_deep_seek') ),'w') as ffg: 
                 ff.write(response_parse) 
             
